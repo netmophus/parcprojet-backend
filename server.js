@@ -82,6 +82,72 @@ const path = require('path');
 
 // Middleware
 app.use(cors());
+
+
+
+
+
+// ✅ Origines autorisées
+const allowedOrigins = [
+  'https://parcprojet-frontend-45a8df9cb0d5.herokuapp.com/',
+//     'http://localhost:3000',
+//    'http://127.0.0.1:3000',
+//   'http://192.168.1.221:3000',
+//  'http://192.168.80.55:3000'
+
+ 
+];
+
+// ✅ Middleware CORS dynamique
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
+
+// ✅ Middleware manuel pour renforcer les en-têtes CORS
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+
+if (req.method === "OPTIONS") {
+  res.header("Access-Control-Allow-Origin", origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  return res.status(200).end();
+}
+
+
+  next();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.use(express.json());
 
 // ✅ Alias de compatibilité : /uploads/menus → uploads/menuitems
@@ -90,15 +156,15 @@ app.use(
   express.static(path.join(__dirname, 'uploads/menuitems'))
 );
 
-// ✅ Statique /uploads + petit header anti-blocage
-app.use(
-  '/uploads',
-  (req, res, next) => {
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    next();
-  },
-  express.static(path.join(__dirname, 'uploads'))
-);
+// // ✅ Statique /uploads + petit header anti-blocage
+// app.use(
+//   '/uploads',
+//   (req, res, next) => {
+//     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+//     next();
+//   },
+//   express.static(path.join(__dirname, 'uploads'))
+// );
 
 // Connexion MongoDB
 mongoose.connect(process.env.MONGO_URI, {
