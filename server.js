@@ -89,7 +89,7 @@ app.use(cors());
 
 // ✅ Origines autorisées
 const allowedOrigins = [
-  'https://parcprojet-frontend-45a8df9cb0d5.herokuapp.com/',
+  'https://parcprojet-frontend-45a8df9cb0d5.herokuapp.com',
 //     'http://localhost:3000',
 //    'http://127.0.0.1:3000',
 //   'http://192.168.1.221:3000',
