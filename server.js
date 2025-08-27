@@ -185,6 +185,12 @@ app.use('/api/menuitems', menuItemRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/play', playRoutes);
 
+
+app.get('/', (req, res) => {
+  res.send('Bienvenue sur l’API de Parc Salma 🌴');
+});
+
+
 // Port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
